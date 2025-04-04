@@ -15,6 +15,7 @@ import kotlinx.coroutines.launch
 import java.io.Closeable
 import java.io.File
 import java.util.UUID
+import java.util.concurrent.CancellationException
 
 class Web2PdfConverter(context: Context) : AutoCloseable, Closeable {
 
@@ -240,5 +241,6 @@ class Web2PdfConverter(context: Context) : AutoCloseable, Closeable {
 
     override fun close() {
         webView.destroy()
+        currentJob?.cancel(CancellationException("Web2PdfConverter closed"))
     }
 }
