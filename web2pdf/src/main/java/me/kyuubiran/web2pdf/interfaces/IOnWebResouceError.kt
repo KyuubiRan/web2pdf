@@ -5,5 +5,5 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 
 fun interface IOnResourceErrorCallback {
-    fun onResourceError(view: WebView, request: WebResourceRequest?, error: WebResourceError?)
+    fun onResourceError(view: WebView, request: WebResourceRequest, error: WebResourceError)
 }

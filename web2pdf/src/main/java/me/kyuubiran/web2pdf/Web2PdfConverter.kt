@@ -37,7 +37,7 @@ class Web2PdfConverter(context: Context) : Closeable {
     private val webView: WebView = WebView(context).apply {
         webViewClient = object : WebViewClient() {
 
-            override fun onReceivedError(view: WebView, request: WebResourceRequest?, error: WebResourceError?) {
+            override fun onReceivedError(view: WebView, request: WebResourceRequest, error: WebResourceError) {
                 super.onReceivedError(view, request, error)
                 onResourceError?.onResourceError(view, request, error)
             }
@@ -138,7 +138,7 @@ class Web2PdfConverter(context: Context) : Closeable {
      * This is useful for pages that load content dynamically or waiting for animated elements.
      */
     var delayBeforeConvert: Long? = null
-//    endregion
+// endregion
 
 // region Private Functions
 
@@ -166,7 +166,7 @@ class Web2PdfConverter(context: Context) : Closeable {
         this.onFinishCallBack = onFinish
         webView.loadDataWithBaseURL(baseUrl, data, mineType ?: "text/html", encoding ?: "UTF-8", null)
     }
-//    endregion
+// endregion
 
 // region Public Functions
 
