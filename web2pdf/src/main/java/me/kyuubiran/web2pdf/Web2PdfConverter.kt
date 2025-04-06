@@ -269,6 +269,7 @@ class Web2PdfConverter(context: Context) : Closeable {
      * Cancel the current PDF generation task.
      * This will stop the WebView from loading and clear its history and cache.
      */
+    @Synchronized
     fun cancel() {
         isTaskCancelled = true
         currentJob?.cancel(CancellationException("Web2PdfConverter cancelled"))
@@ -281,7 +282,7 @@ class Web2PdfConverter(context: Context) : Closeable {
 // endregion
 
     override fun close() {
+        cancel()
         webView.destroy()
-        currentJob?.cancel(CancellationException("Web2PdfConverter closed"))
     }
 }
