@@ -6,18 +6,22 @@ import android.content.Context
 import android.print.PdfPrinter
 import android.print.PrintAttributes
 import android.print.PrintAttributes.Resolution
+import android.webkit.WebResourceError
+import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import me.kyuubiran.web2pdf.interfaces.IOnPageLoadFinishedCallback
+import me.kyuubiran.web2pdf.interfaces.IOnResourceErrorCallback
 import java.io.Closeable
 import java.io.File
 import java.util.UUID
 import java.util.concurrent.CancellationException
 
-class Web2PdfConverter(context: Context) : AutoCloseable, Closeable {
+class Web2PdfConverter(context: Context) : Closeable {
 
     data class ProcessDataOptions(
         val baseUrl: String? = null,
@@ -32,6 +36,12 @@ class Web2PdfConverter(context: Context) : AutoCloseable, Closeable {
     private val coScope = MainScope()
     private val webView: WebView = WebView(context).apply {
         webViewClient = object : WebViewClient() {
+
+            override fun onReceivedError(view: WebView, request: WebResourceRequest?, error: WebResourceError?) {
+                super.onReceivedError(view, request, error)
+                onResourceError?.onResourceError(view, request, error)
+            }
+
             override fun onPageFinished(view: WebView, url: String) {
                 super.onPageFinished(view, url)
                 // avoid multiple calls
@@ -73,6 +83,11 @@ class Web2PdfConverter(context: Context) : AutoCloseable, Closeable {
      * Callback for when the page load is finished.
      */
     var onPageLoadFinished: IOnPageLoadFinishedCallback? = null
+
+    /**
+     * Callback for when a resource error occurs.
+     */
+    var onResourceError: IOnResourceErrorCallback? = null
 
     /**
      * The current coroutine job for PDF generation.
@@ -237,6 +252,19 @@ class Web2PdfConverter(context: Context) : AutoCloseable, Closeable {
         processDataInternal(options?.baseUrl, data, options?.mineType, options?.encoding, outputFile, onFinish)
         return true
     }
+
+    /**
+     * Cancel the current PDF generation task.
+     * This will stop the WebView from loading and clear its history and cache.
+     */
+    fun cancel() {
+        currentJob?.cancel(CancellationException("Web2PdfConverter cancelled"))
+        currentJob = null
+        webView.stopLoading()
+        webView.clearHistory()
+        webView.clearCache(true)
+    }
+
 // endregion
 
     override fun close() {

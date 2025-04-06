@@ -1,4 +1,4 @@
-package me.kyuubiran.web2pdf
+package me.kyuubiran.web2pdf.interfaces
 
 import android.webkit.WebView
 

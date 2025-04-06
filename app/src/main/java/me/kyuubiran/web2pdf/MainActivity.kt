@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
+import me.kyuubiran.web2pdf.interfaces.IOnPageLoadFinishedCallback
 import me.kyuubiran.web2pdf.ui.theme.Web2pdfTheme
 import java.io.File
 
