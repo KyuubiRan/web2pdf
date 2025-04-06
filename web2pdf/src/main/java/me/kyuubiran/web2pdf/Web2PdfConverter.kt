@@ -95,6 +95,7 @@ class Web2PdfConverter(context: Context) : Closeable {
     var onPageLoadFinished: IOnPageLoadFinishedCallback? = null
 
     @JvmSynthetic
+    @JvmName("-setOnPageLoadFinished")
     fun setOnPageLoadFinished(block: IOnPageLoadFinishedCallback) {
         onPageLoadFinished = block
     }
@@ -105,6 +106,7 @@ class Web2PdfConverter(context: Context) : Closeable {
     var onResourceError: IOnResourceErrorCallback? = null
 
     @JvmSynthetic
+    @JvmName("-setOnResourceError")
     fun setOnResourceError(block: IOnResourceErrorCallback) {
         onResourceError = block
     }
