@@ -20,6 +20,7 @@ import java.io.Closeable
 import java.io.File
 import java.util.UUID
 import java.util.concurrent.CancellationException
+import kotlin.math.PI
 
 class Web2PdfConverter(context: Context) : Closeable {
 
@@ -50,6 +51,12 @@ class Web2PdfConverter(context: Context) : Closeable {
 
                 onPageLoadFinished?.onLoadFinished(view, url)
 
+                if (isTaskCancelled) {
+                    isTaskCancelled = false
+                    onFinishCallBack.onResult(false, null, CancellationException("Web2PdfConverter cancelled"))
+                    return
+                }
+
                 currentJob = coScope.launch {
                     delayBeforeConvert?.let { delay(it) }
                     val printer = PdfPrinter(
@@ -79,6 +86,10 @@ class Web2PdfConverter(context: Context) : Closeable {
         @Synchronized private set
         @Synchronized get
 
+    var isTaskCancelled = false
+        @Synchronized private set
+        @Synchronized get
+
     /**
      * Callback for when the page load is finished.
      */
@@ -94,7 +105,8 @@ class Web2PdfConverter(context: Context) : Closeable {
      * This is used to track if a conversion is already in progress.
      */
     var currentJob: Job? = null
-        private set
+        @Synchronized private set
+        @Synchronized get
 
     /**
      * Enable or disable JavaScript in the WebView.
@@ -258,6 +270,7 @@ class Web2PdfConverter(context: Context) : Closeable {
      * This will stop the WebView from loading and clear its history and cache.
      */
     fun cancel() {
+        isTaskCancelled = true
         currentJob?.cancel(CancellationException("Web2PdfConverter cancelled"))
         currentJob = null
         webView.stopLoading()
