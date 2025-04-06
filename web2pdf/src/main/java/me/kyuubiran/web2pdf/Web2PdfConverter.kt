@@ -20,7 +20,6 @@ import java.io.Closeable
 import java.io.File
 import java.util.UUID
 import java.util.concurrent.CancellationException
-import kotlin.math.PI
 
 class Web2PdfConverter(context: Context) : Closeable {
 
