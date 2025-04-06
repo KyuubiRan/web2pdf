@@ -37,7 +37,7 @@ class MainActivity : ComponentActivity() {
                 })
         ).apply {
             delayBeforeConvert = 500L
-            enableJs = true
+            javaScriptEnabled = true
             onPageLoadFinished = IOnPageLoadFinishedCallback { wv, url ->
                 Log.d("Web2Pdf", "onPageLoadFinished: $url")
                 if (url == "file:///android_asset/test.html") {

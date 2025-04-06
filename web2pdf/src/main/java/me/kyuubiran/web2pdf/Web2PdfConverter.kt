@@ -94,10 +94,20 @@ class Web2PdfConverter(context: Context) : Closeable {
      */
     var onPageLoadFinished: IOnPageLoadFinishedCallback? = null
 
+    @JvmSynthetic
+    fun setOnPageLoadFinished(block: IOnPageLoadFinishedCallback) {
+        onPageLoadFinished = block
+    }
+
     /**
      * Callback for when a resource error occurs.
      */
     var onResourceError: IOnResourceErrorCallback? = null
+
+    @JvmSynthetic
+    fun setOnResourceError(block: IOnResourceErrorCallback) {
+        onResourceError = block
+    }
 
     /**
      * The current coroutine job for PDF generation.
@@ -110,7 +120,7 @@ class Web2PdfConverter(context: Context) : Closeable {
     /**
      * Enable or disable JavaScript in the WebView.
      */
-    var enableJs: Boolean
+    var javaScriptEnabled: Boolean
         set(v) {
             webView.settings.javaScriptEnabled = v
         }
